@@ -1,0 +1,17 @@
+(Unit?) test driven approach!!!
+
+
+
+Trello bord:
+
+Open taken:
+    marcel proof commandline fails maken
+    twee testdata met elkaar vergelijken en overeenkomsten vinden
+
+
+
+Nicole:
+    eerste unit test
+
+Vincent:
+    command line tool picocli gebruiken in file
