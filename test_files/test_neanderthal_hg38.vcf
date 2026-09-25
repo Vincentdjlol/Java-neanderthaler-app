@@ -1,0 +1,18 @@
+##fileformat=VCFv4.2
+##reference=GRCh38
+##contig=<ID=chr1,length=248956422>
+##contig=<ID=chr2,length=242193529>
+##contig=<ID=chr3,length=198295559>
+##contig=<ID=chrX,length=156040895>
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Total depth">
+##INFO=<ID=ANN,Number=.,Type=String,Description="Functional annotation: Allele|Annotation|Impact|Gene">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read depth">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	ALTAI_TEST
+chr1	10000	.	A	G	70	PASS	DP=35;ANN=G|missense_variant|MODERATE|GENEA	GT:DP	1/1:35
+chr1	20000	.	C	A	52	PASS	DP=27;ANN=A|missense_variant|MODERATE|GENEA	GT:DP	0/1:27
+chr1	40000	.	A	C	48	PASS	DP=24;ANN=C|intron_variant|MODIFIER|GENEB	GT:DP	1/1:24
+chr2	15000	.	T	C	44	PASS	DP=21;ANN=C|missense_variant|MODERATE|GENEC	GT:DP	0/1:21
+chr2	25000	.	AT	A	41	PASS	DP=19;ANN=A|frameshift_variant|HIGH|GENED	GT:DP	0/1:19
+chr3	5000	.	G	.	60	PASS	DP=30	GT:DP	0/0:30
+chrX	1000	.	C	T	.	LowQual	DP=2;ANN=T|intergenic_variant|MODIFIER|.	GT:DP	./.:2
