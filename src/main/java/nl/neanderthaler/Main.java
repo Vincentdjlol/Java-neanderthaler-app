@@ -1,8 +1,8 @@
+package nl.neanderthaler;
+
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
-import picocli.CommandLine.Help;
 
 @Command(name = "Java-neanderthaler-app",
         description = "Test description want ik heb geen zin in een echte te bedenken nu!",
