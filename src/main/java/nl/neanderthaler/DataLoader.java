@@ -1,9 +1,11 @@
+/* In deze  file VCF bestanden inlezen */
 package nl.neanderthaler;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+
 
 public class DataLoader {
 
