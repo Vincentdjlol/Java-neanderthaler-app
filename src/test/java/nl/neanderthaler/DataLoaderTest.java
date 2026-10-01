@@ -1,4 +1,5 @@
-import nl.neanderthaler.DataLoader;
+package nl.neanderthaler;
+
 import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.util.List;
