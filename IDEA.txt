@@ -1,17 +1,30 @@
-(Unit?) test driven approach!!!
+test driven approach!!!
 
 
 
 Trello bord:
 
 Open taken:
-    marcel proof commandline fails maken
+    marcel proof commandline fails maken (unit test
     twee testdata met elkaar vergelijken en overeenkomsten vinden
+    Filteropties toevoegen aan Main als picocli-opties.
+    Vaststellen welk annotatieveld de VCF-bestanden gebruiken
+
+
+Bezig:
+
+Vincent
+    2 Annotated VCF vinden
+    VCF opener + reader maken
 
 
 
-Nicole:
+Af:
+
+Nicole
     eerste unit test
+    dummy klassen maken
+    UML diagram + uitleg
 
-Vincent:
+Vincent
     command line tool picocli gebruiken in file
