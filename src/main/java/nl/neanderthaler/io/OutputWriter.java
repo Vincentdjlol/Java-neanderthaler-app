@@ -1,4 +1,7 @@
-package nl.neanderthaler;
+package nl.neanderthaler.io;
+
+import nl.neanderthaler.model.ComparisonResult;
+import nl.neanderthaler.model.Variant;
 
 public class OutputWriter {
 

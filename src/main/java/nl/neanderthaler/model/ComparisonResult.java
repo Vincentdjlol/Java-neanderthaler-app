@@ -1,4 +1,4 @@
-package nl.neanderthaler;
+package nl.neanderthaler.model;
 
 import java.util.List;
 

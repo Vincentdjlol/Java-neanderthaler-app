@@ -1,4 +1,6 @@
-package nl.neanderthaler;
+package nl.neanderthaler.worker;
+
+import nl.neanderthaler.model.Variant;
 
 import java.util.List;
 

@@ -1,4 +1,7 @@
-package nl.neanderthaler;
+package nl.neanderthaler.worker;
+
+import nl.neanderthaler.model.ComparisonResult;
+import nl.neanderthaler.model.Variant;
 
 import java.util.List;
 import java.util.Map;

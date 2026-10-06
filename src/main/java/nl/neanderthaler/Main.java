@@ -1,5 +1,12 @@
 package nl.neanderthaler;
 
+import nl.neanderthaler.io.DataLoader;
+import nl.neanderthaler.io.OutputWriter;
+import nl.neanderthaler.model.Variant;
+import nl.neanderthaler.model.ComparisonResult;
+import nl.neanderthaler.worker.VariantComparator;
+import nl.neanderthaler.worker.VariantFilter;
+import nl.neanderthaler.worker.VariantParser;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
