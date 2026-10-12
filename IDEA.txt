@@ -8,6 +8,9 @@ Open taken:
     marcel proof commandline fails maken
     twee testdata met elkaar vergelijken en overeenkomsten vinden
 
+Taken af voor midterm:
+    Readme duidelijk
+    werkende vergelijking
 
 
 Nicole:
