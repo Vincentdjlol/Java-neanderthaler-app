@@ -24,7 +24,7 @@ public class Main implements Runnable {
 
     @Option(
             names = {"--human"},
-            description = "Path voor VCF file van jouw gekozen mens",
+            description = "Path for the VCF file of your chosen human",
             required = true
     )
     private String humanvcf;
@@ -32,7 +32,7 @@ public class Main implements Runnable {
 
     @Option(
             names = {"--neanderthaler"}, // of 2e mens
-            description = "Path voor VCF file van de Neanderthaler (voorbeeld path)",
+            description = "Path for the VCF file of the neanderthaler",
             required = true
     )
     private String neanderthalervcf;
@@ -40,7 +40,7 @@ public class Main implements Runnable {
     // dit wordt door picocli aangeroepen nadat de opties zijn ingevuld
     @Override
     public void run() {
-        System.out.println("Mens VCF: " + humanvcf);
+        System.out.println("Human VCF: " + humanvcf);
         System.out.println("Neanderthaler VCF: " + neanderthalervcf);
 
         try {
