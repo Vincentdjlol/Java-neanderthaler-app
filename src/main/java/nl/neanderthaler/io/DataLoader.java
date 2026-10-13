@@ -1,5 +1,5 @@
 /* In deze  file VCF bestanden inlezen */
-package nl.neanderthaler;
+package nl.neanderthaler.io;
 
 import java.io.IOException;
 import java.nio.file.Files;
