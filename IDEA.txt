@@ -7,11 +7,33 @@ Trello bord:
 Open taken:
     marcel proof commandline fails maken
     twee testdata met elkaar vergelijken en overeenkomsten vinden
+    marcel vragen of onze UML al perfect is en we hetzelfde in kunnen leveren
+    geen overbodige dingen in terminal
+
 
 Taken af voor midterm:
-    Readme duidelijk
-    werkende vergelijking
 
+Nicole:
+    Readme duidelijk
+        test.vcf meegeven
+        handleiding commandline gebruik
+        help ect.
+        overzicht features
+            wat geef je mee
+            wat komt eruit
+            de help functies benoemen
+
+    De kwaliteit van de code2 dusss comments, "",
+
+    repo kwaliteit checken
+        kijken of er onnodige files zijn
+
+Vincent:
+    werkende!! vergelijking
+        output geven
+
+
+Af:
 
 Nicole:
     eerste unit test
