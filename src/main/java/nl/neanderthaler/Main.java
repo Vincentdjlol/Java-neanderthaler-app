@@ -15,13 +15,18 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-// info over het programma die picocli toont bij --help
+/**
+ * Starting point of the Neanderthaler DNA Comparer.
+ * <p>
+ * Reads both VCF files, turns them into variants, filters them and compares them.
+ * Both files go through exactly the same steps, so neither side gets an advantage.
+ */
 @Command(name = "Java-neanderthaler-app",
         description = "Vergelijkt de varianten in een humane VCF met die van een Neanderthaler (beide GRCh38).",
-        mixinStandardHelpOptions = true) // voegt --help en --version toe
-
+        mixinStandardHelpOptions = true) // gives us --help and --version for free
 public class Main implements Runnable {
 
+    // The only option the user really has to give right now
     @Option(
             names = {"--human"},
             description = "Path for the VCF file of your chosen human",
@@ -29,13 +34,15 @@ public class Main implements Runnable {
     )
     private String humanvcf;
 
+    // Falls back to the Neanderthaler file that comes with the project
     @Option(
-            names = {"--neanderthaler"}, // of 2e mens
+            names = {"--neanderthaler"}, // a second human works just as well (h38)
             description = "Path for the VCF file of the neanderthaler (default ${DEFAULT-VALUE})",
             defaultValue = "test_files/neanderthaler.vcf"
     )
     private String neanderthalervcf;
 
+    // Variants exactly on the threshold are kept, and at 0 so are variants without a quality
     @Option(
             names = {"--min-qual"},
             description = "Minimale QUAL-waarde van een variant (default ${DEFAULT-VALUE})",
@@ -43,39 +50,42 @@ public class Main implements Runnable {
     )
     private double minQuality;
 
+    // Works with both chr21 and 21, the naming gets cleaned up later
     @Option(
             names = {"--chrom"},
             description = "Alleen dit chromosoom vergelijken, bijvoorbeeld chr21 of 21"
     )
     private String chromosome;
 
+    // Only used when the user wants the results in a file as well
     @Option(
             names = {"--output"},
             description = "Schrijf alle varianten met hun categorie naar dit TSV-bestand"
     )
     private Path output;
 
-    // dit wordt door picocli aangeroepen nadat de opties zijn ingevuld
+    /**
+     * Runs the whole comparison. Picocli only gets here once every option checks out.
+     */
     @Override
     public void run() {
         System.out.println("Human VCF: " + humanvcf);
         System.out.println("Neanderthaler VCF: " + neanderthalervcf);
 
         try {
-            List<String> humanLines = DataLoader.load(Path.of(humanvcf)); // roept DataLoader aan en leest bestanden dan in
+            List<String> humanLines = DataLoader.load(Path.of(humanvcf));
             List<String> neanderthalerLines = DataLoader.load(Path.of(neanderthalervcf));
 
-            // regels omzetten naar Variant-objecten (alleen allelen die het individu echt draagt)
+            // Only alleles the person actually carries make it through, so a 0/0 position just disappears
             VariantParser parser = new VariantParser();
             List<Variant> humanVariants = parser.parse(humanLines);
             List<Variant> neanderthalerVariants = parser.parse(neanderthalerLines);
 
-            // varianten filteren op FILTER-kolom, kwaliteit en eventueel chromosoom
+            // Same filter for both, otherwise the shared percentage would be unfair
             VariantFilter filter = new VariantFilter(minQuality, chromosome);
             List<Variant> humanFiltered = filter.filter(humanVariants);
             List<Variant> neanderthalerFiltered = filter.filter(neanderthalerVariants);
 
-            // mens en Neanderthaler vergelijken
             VariantComparator comparator = new VariantComparator();
             ComparisonResult result = comparator.compare(humanFiltered, neanderthalerFiltered);
 
@@ -84,15 +94,20 @@ public class Main implements Runnable {
             if (output != null) {
                 writer.writeTsv(result, output);
             }
-        } catch (IOException e) { // als bestand niet gelezen kan worden
+        } catch (IOException e) { // writing the TSV can also end up here, the message does not say so yet
             System.err.println("Could not read VCF file: " + e.getMessage());
-        } catch (IllegalArgumentException e) { // bijvoorbeeld als bestand niet bestaat
+        } catch (IllegalArgumentException e) { // for example a file that does not exist
             System.err.println("Error: " + e.getMessage());
         }
     }
 
+    /**
+     * Passes the arguments to picocli, which checks them and then starts the run method.
+     *
+     * @param args the options the user typed after the jar
+     */
     public static void main(String[] args) {
-        int exitCode = new CommandLine(new Main()).execute(args); // geeft de argumenten door aan picocli
+        int exitCode = new CommandLine(new Main()).execute(args);
         System.exit(exitCode);
     }
 }
