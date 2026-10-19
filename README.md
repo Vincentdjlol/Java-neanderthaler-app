@@ -24,7 +24,7 @@ Two VCF files, one from a modern human and one from a Neanderthaler. You pass th
 A summary with the variants both files share and the variants that only appear in one of them. This is always shown in your terminal and can also be saved to a file with `--output`.
 
 ## Getting started
-Want to try it right away? Use the test files that come with the project.
+For now use the test files that come with the project.
 
 `java -jar build/libs/Java-neanderthaler-app-1.0-SNAPSHOT-all.jar --human test_files/human.vcf --neanderthaler test_files/neanderthaler.vcf`
 
