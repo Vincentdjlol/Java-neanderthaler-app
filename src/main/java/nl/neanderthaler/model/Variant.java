@@ -3,9 +3,9 @@ package nl.neanderthaler.model;
 import java.util.Objects;
 
 /**
- * Eén ALT-allel op één positie dat het individu echt draagt (GT niet 0/0).
- * Een multi-allelische VCF-regel (ALT = C,G) wordt door de parser opgesplitst
- * in meerdere Variant-objecten.
+ * One ALT allele at one position that the individual really carries (GT is not 0/0).
+ * A multi-allelic VCF line (ALT = C,G) is split by the parser
+ * into several Variant objects.
  */
 public class Variant {
 
@@ -14,7 +14,7 @@ public class Variant {
     private final String id;
     private final String ref;
     private final String alt;
-    private final double quality;   // Double.NaN als QUAL een punt is
+    private final double quality;   // Double.NaN when QUAL is a dot
     private final String filter;
     private final Annotation annotation;
 
@@ -39,7 +39,7 @@ public class Variant {
     public String getFilter() { return filter; }
     public Annotation getAnnotation() { return annotation; }
 
-    /** chr1, Chr1 en 1 worden allemaal 1, zodat bestanden met verschillende naamgeving matchen. */
+    /** chr1, Chr1 and 1 all become 1, so files with different naming still match. */
     public static String normalizeChromosome(String chrom) {
         if (chrom == null) {
             return null;
@@ -68,15 +68,15 @@ public class Variant {
         if (alt.length() < ref.length()) {
             return VariantType.DELETION;
         }
-        return VariantType.OTHER; // bijvoorbeeld een MNP zoals AT>GC
+        return VariantType.OTHER; // for example an MNP such as AT>GC
     }
 
-    /** Positiesleutel zonder allel, om "zelfde positie, ander allel" te vinden. */
+    /** Position key without the allele, used to find "same position, different allele". */
     public String getPositionKey() {
         return getNormalizedChromosome() + ":" + position;
     }
 
-    /** Unieke sleutel van chromosoom, positie, REF en ALT. */
+    /** Unique key built from chromosome, position, REF and ALT. */
     public String getKey() {
         return getPositionKey() + ":" + ref + ">" + alt;
     }

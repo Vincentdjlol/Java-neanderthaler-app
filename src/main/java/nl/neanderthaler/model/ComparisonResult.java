@@ -7,7 +7,7 @@ public class ComparisonResult {
     private final List<Variant> shared;
     private final List<Variant> onlyInHuman;
     private final List<Variant> onlyInNeanderthaler;
-    // humane varianten waar de Neanderthaler op dezelfde positie een ANDER alt-allel heeft
+    // human variants where the Neanderthaler has a DIFFERENT alt allele at the same position
     private final List<Variant> differentAllele;
 
     public ComparisonResult(List<Variant> shared, List<Variant> onlyInHuman,
@@ -35,7 +35,7 @@ public class ComparisonResult {
         return shared.size() + onlyInNeanderthaler.size();
     }
 
-    /** Percentage van de humane varianten dat ook bij de Neanderthaler voorkomt. */
+    /** Percentage of the human variants that the Neanderthaler carries as well. */
     public double getSharedPercentage() {
         int total = getHumanTotal();
         return total == 0 ? 0.0 : 100.0 * shared.size() / total;

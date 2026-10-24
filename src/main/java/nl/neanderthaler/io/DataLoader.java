@@ -1,4 +1,4 @@
-// In deze file VCF-bestanden inlezen
+// Reads VCF files and hands the data lines to the rest of the program
 package nl.neanderthaler.io;
 
 import java.io.IOException;
@@ -9,12 +9,18 @@ import java.util.List;
 
 public class DataLoader {
 
+    /**
+     * Reads a VCF and keeps only the data lines, so headers and empty lines are dropped.
+     *
+     * @param path the VCF file to read
+     * @return one string per data line
+     */
     public static List<String> load(Path path) throws IOException {
         if (path == null) {
             throw new IllegalArgumentException("No file given");
         }
         if (!Files.exists(path)) {
-            throw new IllegalArgumentException("File does not exist:" + path);
+            throw new IllegalArgumentException("File does not exist " + path);
         }
 
         List<String> lines = Files.readAllLines(path).stream()
@@ -22,9 +28,21 @@ public class DataLoader {
                 .filter(line -> !line.isBlank())
                 .toList();
 
-        System.out.println("Er zijn " + lines.size() + " varianten in " + path);
+        System.out.println("Read " + lines.size() + " data lines from " + path);
 
         return lines;
+    }
+
+    /**
+     * Reads only the ## meta lines of a VCF, so they can be copied into the output file.
+     *
+     * @param path the VCF file to read the header from
+     * @return all lines that start with ##
+     */
+    public static List<String> loadHeader(Path path) throws IOException {
+        return Files.readAllLines(path).stream()
+                .filter(line -> line.startsWith("##"))
+                .toList();
     }
 
 }
