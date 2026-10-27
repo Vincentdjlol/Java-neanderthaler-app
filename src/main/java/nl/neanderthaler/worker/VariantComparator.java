@@ -23,6 +23,7 @@ public class VariantComparator {
         Map<String, Variant> humanMap = toMap(human);
         Map<String, Variant> neanderthalerMap = toMap(neanderthaler);
 
+        // All Neanderthaler positions without the allel to find a different one at the same spot
         Set<String> neanderthalerPositions = new HashSet<>();
         for (Variant v : neanderthalerMap.values()) {
             neanderthalerPositions.add(v.getPositionKey());
@@ -33,17 +34,19 @@ public class VariantComparator {
         List<Variant> differentAllele = new ArrayList<>();
 
         for (Variant h : humanMap.values()) {
-            Variant n = neanderthalerMap.get(h.getKey());
-            if (n != null && isSameVariant(h, n)) {
+            // Same key means same chromosome, position, REF and ALT so the variant is shared
+            if (neanderthalerMap.containsKey(h.getKey())) {
                 shared.add(h);
             } else {
                 onlyInHuman.add(h);
+                //  Both have a variant at this position, but the variant is different
                 if (neanderthalerPositions.contains(h.getPositionKey())) {
                     differentAllele.add(h);
                 }
             }
         }
 
+        // Neanderthaler variants that the human does not have
         List<Variant> onlyInNeanderthaler = new ArrayList<>();
         for (Variant n : neanderthalerMap.values()) {
             if (!humanMap.containsKey(n.getKey())) {
@@ -58,12 +61,8 @@ public class VariantComparator {
     private Map<String, Variant> toMap(List<Variant> variants) {
         Map<String, Variant> map = new LinkedHashMap<>();
         for (Variant v : variants) {
-            map.putIfAbsent(v.getKey(), v);
+            map.putIfAbsent(v.getKey(), v); // only the first variant with this key is kept
         }
         return map;
-    }
-
-    private boolean isSameVariant(Variant a, Variant b) {
-        return a.getKey().equals(b.getKey());
     }
 }
