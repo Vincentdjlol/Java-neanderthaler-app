@@ -1,49 +1,43 @@
 $${\color{hotpink}\Huge\textsf{Neanderthaler DNA Comparer}}$$
 
-The Java Neanderthaler App is a command-line application that allows for the comparison of genetic variants between a modern human and a Neanderthaler and
-gives you insights on the similarity between the DNA entered by the user and the Neanderthal genome.
+With the Java Neanderthaler App you can compare your human VCF file with a Neanderthaler VCF file, or with another VCF file of your choice.
+Both files must be based on the reference genome GRCh38.
+The output shows how many variants the human and the Neanderthaler have after filtering, how many of them are shared and what percentage of the human variants the Neanderthaler also carries.
+Optionally the separate variants are shown in the terminal and all results are written to a TSV file with the header of the human VCF.
 
 ## What it does
-The app reads two VCF files and checks them first, so broken input is caught before anything else happens. It then compares the human and Neanderthaler variants position by position and finds out which variants they share and which ones belong to only one of them. Finally it writes a clear summary to your terminal, and if you want also to a file, so you can see in one glance how much Neanderthal is hiding in the DNA.
+The app reads both VCF files and turns each line into variants. Only variants that the person really carries are kept. Lines that cannot be read are skipped and reported, so one broken line does not stop the program. Variants that were rejected by the variant caller or that have a quality below your threshold are filtered out. The app then compares the human and Neanderthaler variants and finds out which variants they share, which ones belong to only one of them and where both have a different variant at the same position. Finally it prints a summary in your terminal.
 
 ## Installation
 
-Step 1: Download the project
+### 1. Download the project
+Download the project from GitHub or clone the repository with `git clone https://github.com/Vincentdjlol/Java-neanderthaler-app.git`
 
-Download the project from GitHub or clone the repository using `git clone https://github.com/Vincentdjlol/Java-neanderthaler-app.git`
-
-Step 2: Open and build the application
-
-Navigate to the Java-neanderthaler-app directory and run the following command in your terminal: `.\gradlew.bat shadowJar` (on macOS or Linux use `./gradlew shadowJar`)
-Gradle will then download all the needed dependencies and build the JAR file. This file will be saved in `build/libs/Java-neanderthaler-app-1.0-SNAPSHOT-all.jar`
-
-## What you give it
-Two VCF files, one from a modern human and one from a Neanderthaler. You pass them to the program with `--human` and `--neanderthaler`. If you leave out `--neanderthaler`, the program uses the Neanderthaler file that comes with the project.
-
-## What you get back
-A summary with the variants both files share and the variants that only appear in one of them. This is always shown in your terminal and can also be saved to a file with `--output`.
+### 2. Build the application
+Go to the Java-neanderthaler-app folder and run `.\gradlew.bat shadowJar` in your terminal. On macOS or Linux use `./gradlew shadowJar`.
+Gradle downloads all needed dependencies and builds the JAR file. The file is saved as `build/libs/Java-neanderthaler-app-1.0-SNAPSHOT-all.jar`.
 
 ## Getting started
-For now use the test files that come with the project.
+Try the program with the test files that come with the project.
 
 `java -jar build/libs/Java-neanderthaler-app-1.0-SNAPSHOT-all.jar --human test_files/human.vcf --neanderthaler test_files/neanderthaler.vcf`
 
+## What you get back
+The terminal always shows a summary with the number of variants per file, the shared variants and the shared percentage. It also shows a table per chromosome and a table per variant type. With `--details` you also see the separate variants, and with `--output` all variants are saved to a TSV file.
+
+The shared percentage is the share of human variants that the Neanderthaler also carries. It is not a measure of Neanderthal ancestry.
+
 ## Using the command line
+Run the program with `java -jar build/libs/Java-neanderthaler-app-1.0-SNAPSHOT-all.jar --human <path>`
 
-To run the program, enter the following into your command line: `java -jar build/libs/Java-neanderthaler-app-1.0-SNAPSHOT-all.jar --human <path> --neanderthaler <path>`
-
---human: is the path to the VCF file for the human. This argument is mandatory.
-
---neanderthaler: is the path to the VCF file for the neanderthaler. This argument is optional, if you leave it out the program uses `test_files/neanderthaler.vcf`.
-
-You can also use these optional arguments:
-
---chrom: only compare one chromosome, for example `21` or `chr21`
-
---min-qual: skip variants with a quality lower than this number
-
---output: also save all variants to a TSV file
-
+| Option | Required | Description |
+|---|---|---|
+| `--human` | yes | Path to the VCF file of the human |
+| `--neanderthaler` | no | Path to the VCF file of the Neanderthaler. Without it the program uses `test_files/neanderthaler.vcf` |
+| `--chrom` | no | Only compare one chromosome, for example `21` or `chr21` |
+| `--min-qual` | no | Skip variants with a quality lower than this number. The default is 0 |
+| `--details` | no | Also show the separate variants in the terminal |
+| `--output` | no | Save all variants with their category to this TSV file |
 
 ## Help and options
 To see all options, run `java -jar build/libs/Java-neanderthaler-app-1.0-SNAPSHOT-all.jar --help`

@@ -17,6 +17,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * Shows the results in the terminal and writes them to a TSV file.
+ */
 public class OutputWriter {
 
     private static final int MAX_LISTED = 20; // how many variants per list are shown on screen
@@ -51,6 +54,7 @@ public class OutputWriter {
      * @param result the outcome of the comparison
      * @param path   the file to write to
      * @param header the ## lines copied from the human VCF
+     * @throws IOException when the file cannot be written
      */
     public void writeTsv(ComparisonResult result, Path path, List<String> header) throws IOException {
         try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(path))) {
@@ -67,9 +71,17 @@ public class OutputWriter {
         System.out.println("Full list written to " + path);
     }
 
+    /**
+     * Writes one TSV line for each variant in the list.
+     *
+     * @param out      where the lines are written to
+     * @param category the name of the group, for example shared
+     * @param variants the variants to write
+     */
     private void writeRows(PrintWriter out, String category, List<Variant> variants) {
         for (Variant v : variants) {
             Annotation a = v.getAnnotation();
+            // A dot is written when there is no annotation
             out.println(String.join("\t", category, v.getChromosome(), String.valueOf(v.getPosition()),
                     v.getRef(), v.getAlt(), v.getType().name(),
                     a == null || a.getGene() == null ? "." : a.getGene(),
@@ -78,6 +90,12 @@ public class OutputWriter {
         }
     }
 
+    /**
+     * Makes the overview with the totals and the shared percentage.
+     *
+     * @param result the outcome of the comparison
+     * @return the overview as text
+     */
     private String formatSummary(ComparisonResult result) {
         StringBuilder sb = new StringBuilder();
         sb.append("=== Comparison human vs Neanderthaler ===\n");
@@ -91,12 +109,18 @@ public class OutputWriter {
         return sb.toString();
     }
 
+    /**
+     * Makes a table with the number of variants on each chromosome.
+     *
+     * @param result the outcome of the comparison
+     * @return the table as text
+     */
     private String formatPerChromosome(ComparisonResult result) {
         // per chromosome {human, neanderthaler, shared}
         Map<String, int[]> counts = new TreeMap<>(OutputWriter::compareChromosomes);
         for (Variant v : result.getShared()) {
             int[] c = counts.computeIfAbsent(v.getNormalizedChromosome(), k -> new int[3]);
-            c[0]++; c[1]++; c[2]++;
+            c[0]++; c[1]++; c[2]++; // a shared variant counts for human, Neanderthaler and shared
         }
         for (Variant v : result.getOnlyInHuman()) {
             counts.computeIfAbsent(v.getNormalizedChromosome(), k -> new int[3])[0]++;
@@ -115,11 +139,17 @@ public class OutputWriter {
         return sb.toString();
     }
 
+    /**
+     * Makes a table with the number of human variants of each type.
+     *
+     * @param result the outcome of the comparison
+     * @return the table as text
+     */
     private String formatPerType(ComparisonResult result) {
         Map<VariantType, int[]> counts = new EnumMap<>(VariantType.class);
         for (Variant v : result.getShared()) {
             int[] c = counts.computeIfAbsent(v.getType(), k -> new int[2]);
-            c[0]++; c[1]++;
+            c[0]++; c[1]++; // a shared variant counts for human and shared
         }
         for (Variant v : result.getOnlyInHuman()) {
             counts.computeIfAbsent(v.getType(), k -> new int[2])[0]++;
@@ -133,8 +163,15 @@ public class OutputWriter {
         return sb.toString();
     }
 
+    /**
+     * Turns one variant into a line of text for the terminal.
+     *
+     * @param variant the variant to show
+     * @return the variant with its position, alleles, type and annotation
+     */
     private String formatVariant(Variant variant) {
         Annotation a = variant.getAnnotation();
+        // Empty when there is no annotation
         String annotation = a == null ? "" : String.format("%-8s %-22s %s",
                 a.getGene() == null ? "-" : a.getGene(), a.getEffect(), a.getImpact());
         return String.format(Locale.ROOT, "  %-18s %-10s %-9s %s",
@@ -143,6 +180,12 @@ public class OutputWriter {
                 variant.getType(), annotation);
     }
 
+    /**
+     * Prints a list of variants, but never more than max listed
+     *
+     * @param title    the title above the list
+     * @param variants the variants to print
+     */
     private void printList(String title, List<Variant> variants) {
         System.out.println(title + " (" + variants.size() + ")");
         variants.stream().limit(MAX_LISTED).map(this::formatVariant).forEach(System.out::println);
@@ -152,6 +195,12 @@ public class OutputWriter {
         System.out.println();
     }
 
+    /**
+     * Keeps only the variants with a HIGH or MODERATE impact.
+     *
+     * @param variants the variants to look through
+     * @return the HIGH variants first, then the MODERATE variants
+     */
     private List<Variant> highImpact(List<Variant> variants) {
         List<Variant> result = new ArrayList<>();
         for (Variant v : variants) {
@@ -164,12 +213,18 @@ public class OutputWriter {
         return result;
     }
 
-    /** Natural chromosome order, so chr2 is listed before chr10 instead of after it. */
+    /**
+     * Natural chromosome order, so chr2 is listed before chr10 instead of after it
+     *
+     * @param a the first chromosome name
+     * @param b the second chromosome name
+     * @return a negative number when a comes first, a positive number when b comes first
+     */
     private static int compareChromosomes(String a, String b) {
         boolean aNum = a.matches("\\d+");
         boolean bNum = b.matches("\\d+");
         if (aNum && bNum) return Integer.compare(Integer.parseInt(a), Integer.parseInt(b));
-        if (aNum) return -1;
+        if (aNum) return -1; // numbers come before letters like X and Y
         if (bNum) return 1;
         return a.compareTo(b);
     }

@@ -14,6 +14,7 @@ public class DataLoader {
      *
      * @param path the VCF file to read
      * @return one string per data line
+     * @throws IOException when the file cannot be read
      */
     public static List<String> load(Path path) throws IOException {
         if (path == null) {
@@ -24,8 +25,8 @@ public class DataLoader {
         }
 
         List<String> lines = Files.readAllLines(path).stream()
-                .filter(line -> !line.startsWith("#"))
-                .filter(line -> !line.isBlank())
+                .filter(line -> !line.startsWith("#")) // removes the header lines
+                .filter(line -> !line.isBlank()) // removes empty lines
                 .toList();
 
         System.out.println("Read " + lines.size() + " data lines from " + path);
@@ -38,6 +39,7 @@ public class DataLoader {
      *
      * @param path the VCF file to read the header from
      * @return all lines that start with ##
+     * @throws IOException when the file cannot be read
      */
     public static List<String> loadHeader(Path path) throws IOException {
         return Files.readAllLines(path).stream()
