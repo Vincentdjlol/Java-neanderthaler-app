@@ -12,6 +12,13 @@ import java.util.Set;
 
 public class VariantComparator {
 
+    /**
+     * Sorts every variant into shared, only in human or only in Neanderthaler.
+     *
+     * @param human         the filtered human variants
+     * @param neanderthaler the filtered Neanderthaler variants
+     * @return the comparison with all categories filled
+     */
     public ComparisonResult compare(List<Variant> human, List<Variant> neanderthaler) {
         Map<String, Variant> humanMap = toMap(human);
         Map<String, Variant> neanderthalerMap = toMap(neanderthaler);
@@ -47,7 +54,7 @@ public class VariantComparator {
         return new ComparisonResult(shared, onlyInHuman, onlyInNeanderthaler, differentAllele);
     }
 
-    /** Sleutel naar variant, dubbele regels worden één keer meegeteld. Volgorde van het bestand blijft behouden. */
+    /** Maps each key to its variant, so duplicate lines count once. The order of the file is kept. */
     private Map<String, Variant> toMap(List<Variant> variants) {
         Map<String, Variant> map = new LinkedHashMap<>();
         for (Variant v : variants) {

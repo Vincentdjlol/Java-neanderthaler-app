@@ -9,12 +9,18 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Zet VCF-dataregels om naar Variant-objecten.
- * Alleen allelen die het (eerste) sample echt draagt volgens GT worden teruggegeven.
- * Regels met GT 0/0, ./. of ALT "." leveren dus niets op.
+ * Turns VCF data lines into Variant objects.
+ * Only alleles that the (first) sample really carries according to GT are returned.
+ * Lines with GT 0/0, ./. or ALT "." therefore give nothing back.
  */
 public class VariantParser {
 
+    /**
+     * Parses all lines. A broken line is reported and skipped, so one bad record does not stop the whole file.
+     *
+     * @param lines the data lines from the DataLoader
+     * @return every carried allele as its own Variant
+     */
     public List<Variant> parse(List<String> lines) {
         List<Variant> variants = new ArrayList<>();
         int lineNumber = 0;
@@ -23,7 +29,7 @@ public class VariantParser {
             try {
                 variants.addAll(parseLine(line));
             } catch (IllegalArgumentException e) {
-                System.err.println("Regel " + lineNumber + " overgeslagen, " + e.getMessage());
+                System.err.println("Line " + lineNumber + " skipped, " + e.getMessage());
             }
         }
         return variants;
@@ -32,7 +38,7 @@ public class VariantParser {
     private List<Variant> parseLine(String line) {
         String[] fields = line.split("\t");
         if (fields.length < 8) {
-            throw new IllegalArgumentException("minder dan 8 kolommen");
+            throw new IllegalArgumentException("fewer than 8 columns");
         }
 
         String chrom = fields[0];
@@ -45,7 +51,7 @@ public class VariantParser {
         String info = fields[7];
 
         if (altField.equals(".")) {
-            return List.of(); // geen alternatief allel, positie is gelijk aan de referentie
+            return List.of(); // no alternative allele, this position is the same as the reference
         }
 
         String[] alts = altField.split(",");
@@ -54,7 +60,7 @@ public class VariantParser {
         List<Variant> result = new ArrayList<>();
         for (int i = 1; i <= alts.length; i++) {
             String alt = alts[i - 1].toUpperCase();
-            // * = overlappende deletie, <DEL> enz. = symbolisch allel, die vergelijken we niet
+            // A star is an overlapping deletion and <DEL> and friends are symbolic alleles, we do not compare those
             if (!carried.contains(i) || alt.equals("*") || alt.startsWith("<")) {
                 continue;
             }
@@ -64,11 +70,11 @@ public class VariantParser {
         return result;
     }
 
-    /** Geeft de alt-indexen (1, 2, ...) terug die in de GT van het eerste sample staan. */
+    /** Returns the ALT numbers (1, 2, ...) that appear in the GT of the first sample. */
     private Set<Integer> carriedAlleles(String[] fields, int altCount) {
         Set<Integer> carried = new LinkedHashSet<>();
 
-        // geen FORMAT/sample kolommen, dan nemen we aan dat alle ALT-allelen aanwezig zijn
+        // Without FORMAT and sample columns we assume every ALT allele is present
         int gtIndex = fields.length >= 10 ? List.of(fields[8].split(":")).indexOf("GT") : -1;
         if (gtIndex < 0) {
             for (int i = 1; i <= altCount; i++) carried.add(i);
@@ -87,7 +93,7 @@ public class VariantParser {
         return carried;
     }
 
-    /** Leest het SnpEff-achtige ANN-veld (Allele|Annotation|Impact|Gene|...) voor één allel. */
+    /** Reads the SnpEff style ANN field (Allele|Annotation|Impact|Gene|...) for one allele. */
     private Annotation parseAnnotation(String infoField, String alt) {
         for (String entry : infoField.split(";")) {
             if (!entry.startsWith("ANN=")) continue;

@@ -22,7 +22,7 @@ import java.util.List;
  * Both files go through exactly the same steps, so neither side gets an advantage.
  */
 @Command(name = "Java-neanderthaler-app",
-        description = "Vergelijkt de varianten in een humane VCF met die van een Neanderthaler (beide GRCh38).",
+        description = "Compares the variants in a human VCF with those of a Neanderthaler (both GRCh38).",
         mixinStandardHelpOptions = true) // gives us --help and --version for free
 public class Main implements Runnable {
 
@@ -45,7 +45,7 @@ public class Main implements Runnable {
     // Variants exactly on the threshold are kept, and at 0 so are variants without a quality
     @Option(
             names = {"--min-qual"},
-            description = "Minimale QUAL-waarde van een variant (default ${DEFAULT-VALUE})",
+            description = "Minimum QUAL value of a variant (default ${DEFAULT-VALUE})",
             defaultValue = "0"
     )
     private double minQuality;
@@ -53,16 +53,23 @@ public class Main implements Runnable {
     // Works with both chr21 and 21, the naming gets cleaned up later
     @Option(
             names = {"--chrom"},
-            description = "Alleen dit chromosoom vergelijken, bijvoorbeeld chr21 of 21"
+            description = "Only compare this chromosome, for example chr21 or 21"
     )
     private String chromosome;
 
     // Only used when the user wants the results in a file as well
     @Option(
             names = {"--output"},
-            description = "Schrijf alle varianten met hun categorie naar dit TSV-bestand"
+            description = "Write all variants with their category to this TSV file"
     )
     private Path output;
+
+    // Without this flag only the summary is printed, the separate variants stay out of the terminal
+    @Option(
+            names = {"--details"},
+            description = "Also show the separate variants in the terminal"
+    )
+    private boolean details;
 
     /**
      * Runs the whole comparison. Picocli only gets here once every option checks out.
@@ -86,18 +93,28 @@ public class Main implements Runnable {
             List<Variant> humanFiltered = filter.filter(humanVariants);
             List<Variant> neanderthalerFiltered = filter.filter(neanderthalerVariants);
 
+            // A typo in --chrom gives an empty list, so tell the user instead of printing a report full of zeros
+            if (chromosome != null && humanFiltered.isEmpty()) {
+                System.err.println("No human variants on chromosome " + chromosome + ". Does this chromosome exist?");
+                return;
+            }
+            if (chromosome != null && neanderthalerFiltered.isEmpty()) {
+                System.err.println("No Neanderthaler variants on chromosome " + chromosome + ".");
+            }
+
             VariantComparator comparator = new VariantComparator();
             ComparisonResult result = comparator.compare(humanFiltered, neanderthalerFiltered);
 
             OutputWriter writer = new OutputWriter();
-            writer.write(result);
+            writer.write(result, details);
             if (output != null) {
-                writer.writeTsv(result, output);
+                // The header of the human VCF goes on top, so you can always see where the results came from
+                writer.writeTsv(result, output, DataLoader.loadHeader(Path.of(humanvcf)));
             }
-        } catch (IOException e) { // writing the TSV can also end up here, the message does not say so yet
-            System.err.println("Could not read VCF file: " + e.getMessage());
+        } catch (IOException e) { // reading a VCF or writing the TSV can both end up here
+            System.err.println("Could not read or write file " + e.getMessage());
         } catch (IllegalArgumentException e) { // for example a file that does not exist
-            System.err.println("Error: " + e.getMessage());
+            System.err.println("Error " + e.getMessage());
         }
     }
 
