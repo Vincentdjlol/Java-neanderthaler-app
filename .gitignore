@@ -38,3 +38,7 @@ bin/
 /.nb-gradle/
 
 results.tsv
+
+### VCF ###
+*.vcf
+*.vcf.gz

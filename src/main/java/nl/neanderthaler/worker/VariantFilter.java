@@ -25,10 +25,13 @@ public class VariantFilter {
                 .filter(this::passesFilterField)
                 .filter(this::passesQuality)
                 .filter(this::passesChromosome)
+                .filter(this::isStandardChromosome)
                 .toList();
     }
 
-    /** FILTER has to be PASS or ".", otherwise the variant caller rejected the variant itself. */
+    /**
+     * FILTER has to be PASS or ".", otherwise the variant caller rejectes the variant itself.
+     */
     private boolean passesFilterField(Variant variant) {
         String f = variant.getFilter();
         return f == null || f.equals("PASS") || f.equals(".");
@@ -44,5 +47,20 @@ public class VariantFilter {
 
     private boolean passesChromosome(Variant variant) {
         return chromosome == null || chromosome.equals(variant.getNormalizedChromosome());
+    }
+
+    private boolean isStandardChromosome(Variant variant) {
+        String chromosome = variant.getNormalizedChromosome();
+
+        if (chromosome.equals("X") || chromosome.equals("Y") || chromosome.equals("MT")) {
+            return true;
+        }
+
+        try {
+            int number = Integer.parseInt(chromosome);
+            return number >= 1 && number <= 22;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }
