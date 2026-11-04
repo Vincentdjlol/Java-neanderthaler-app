@@ -38,7 +38,7 @@ public class Main implements Runnable {
     @Option(
             names = {"--neanderthaler"}, // a second human works just as well (h38)
             description = "Path for the VCF file of the neanderthaler (default ${DEFAULT-VALUE})",
-            defaultValue = "test_files/neanderthaler.vcf"
+            defaultValue = "test_files/neanderthal_example.vcf"
     )
     private String neanderthalervcf;
 
