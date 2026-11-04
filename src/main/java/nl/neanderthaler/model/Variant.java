@@ -115,37 +115,4 @@ public class Variant {
     public String getKey() {
         return getPositionKey() + ":" + ref + ">" + alt;
     }
-
-    /**
-     * Two variants are the same when their key is the same
-     *
-     * @param o the object to compare with
-     * @return true when both variants have the same key
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Variant other)) return false;
-        return getKey().equals(other.getKey());
-    }
-
-    /**
-     * Has to match equals, so the variant works in a HashMap or HashSet
-     *
-     * @return the hash of the key
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(getKey());
-    }
-
-    /**
-     * How the variant is shown when you print it
-     *
-     * @return the variant as text, for example chr1:100 A>G
-     */
-    @Override
-    public String toString() {
-        return chromosome + ":" + position + " " + ref + ">" + alt;
-    }
 }
