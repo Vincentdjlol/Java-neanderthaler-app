@@ -42,3 +42,8 @@ results.tsv
 ### VCF ###
 *.vcf
 *.vcf.gz
+
+### Test Files ###
+
+test_files/neanderthal.hg38.filt.vcf
+test_files/snpEff_example.vcf
