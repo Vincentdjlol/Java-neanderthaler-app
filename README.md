@@ -44,6 +44,11 @@ Run the program with `java -Xmx<amount of allowed memory>g -jar build/libs/Java-
 To see all options, run:
 `java -jar build/libs/Java-neanderthaler-app-1.0-SNAPSHOT-all.jar --help`
 
+## VCF availability
+The Neanderthal variant data used for the sample was obtained from the UCSC Genome Browser (hg38), using the Neanderthal track under Variation and Repeats.
+
+Source: [UCSC Genome Browser – Table Browser](https://genome.ucsc.edu/cgi-bin/hgTables)
+
 ## Made by
 Vincent de Jong and Nicole Bovenga
 
