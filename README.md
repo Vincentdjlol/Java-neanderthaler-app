@@ -1,9 +1,9 @@
 $${\color{hotpink}\Huge\textsf{Neanderthaler DNA Comparer}}$$
 
-With the Java Neanderthaler App you can compare your human VCF file with a Neanderthaler VCF file, or with another VCF file of your choice.
+With the Java Neanderthaler App, you can compare your human VCF file with a Neanderthaler VCF file, or with another VCF file of your choice.
 Both files must be based on the reference genome GRCh38.
 The output shows how many variants the human and the Neanderthaler have after filtering, how many of them are shared and what percentage of the human variants the Neanderthaler also carries.
-Optionally the separate variants are shown in the terminal and all results are written to a TSV file with the header of the human VCF.
+Optionally, the separate variants are shown in the terminal and all results can be written to a TSV file with the header of the human VCF.
 
 ## What it does
 The app reads both VCF files and turns each line into variants. Positions where the genotype (GT) is 0/0 or ./. are skipped, because the person does not carry an alternative allele there. When a line has more than one alternative allele, each allele that the person carries becomes its own variant. Lines that cannot be read are skipped and reported, so one broken line does not stop the program.
@@ -54,10 +54,16 @@ Run the program with `java -Xmx5g -jar build/libs/Java-neanderthaler-app-1.0-SNA
 
 
 ## Help and options
-To see all options, run `java -jar build/libs/Java-neanderthaler-app-1.0-SNAPSHOT-all.jar --help`
+To see all options, run:
+`java -jar build/libs/Java-neanderthaler-app-1.0-SNAPSHOT-all.jar --help`
+
+## VCF availability
+The Neanderthal variant data used for the sample was obtained from the UCSC Genome Browser (hg38), using the Neanderthal track under Variation and Repeats.
+
+Source: [UCSC Genome Browser – Table Browser](https://genome.ucsc.edu/cgi-bin/hgTables)
 
 ## Made by
-Vincent and Nicole
+Vincent de Jong and Nicole Bovenga
 
 ## Contact
 For questions or problems, open an issue on the GitHub page of this project!
